@@ -10,6 +10,5 @@ The are a few prerequisites required that will not be covered here:
 - A zone for the devices with a user who has access to modify the zone.
 
 # Dependencies
-- Infisical
 - curl
 - krb5-user
