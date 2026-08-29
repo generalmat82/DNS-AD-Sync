@@ -1,0 +1,15 @@
+[Unit]
+Description=DNS AD Sync IP monitor
+Documentation=https://github.com/generalmat82/DNS-AD-Sync
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/DNS-AD-Sync
+ExecStart=/usr/bin/env bash /opt/DNS-AD-Sync/src/main.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
