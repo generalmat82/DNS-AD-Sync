@@ -23,21 +23,21 @@ send"
 ip monitor address | while read -r event; do
   #- If IP is added
   if [[ "$event" =~ ^[0-9]*:.*inet.*scope.*$ ]]; then
-    echo "add"
     ip=$(echo "$event" | grep -E "$ipv4ipv6regex" --only-matching)
+    echo "adding $ip"
     if [[ $event =~ .*inet6.* ]]; then rtype="AAAA"; else rtype="A"; fi
-    kinit -kt $keytab_file $username
+    kinit -kt "$SCRIPT_DIR/$keytab_file" $username
     # shellcheck disable=SC2059
-    printf "$TEMPLATE_update" "$server" "$realm" "$zone" "$dns_hostname" "add" "$TTL" "$rtype" "$ip" | nsupdate
+    printf "$TEMPLATE_update" "$server" "$realm" "$zone" "add" "$dns_hostname" "$TTL" "$rtype" "$ip" | nsupdate
     kdestroy
   #- If IP is deleted
   elif [[ "$event" =~ ^Del.*:.*inet.*scope.*$ ]]; then
-    echo "del"
     ip=$(echo "$event" | grep -E "$ipv4ipv6regex" --only-matching)
+    echo "removing $ip"
     if [[ $event =~ .*inet6.* ]]; then rtype="AAAA"; else rtype="A"; fi
-    kinit -kt $keytab_file $username
+    kinit -kt "$SCRIPT_DIR/$keytab_file" $username
     # shellcheck disable=SC2059
-    print "$TEMPLATE_update" "$server" "$realm" "$zone" "$dns_hostname" "delete" "$TTL" "$rtype" "$ip" | nsupdate
+    printf "$TEMPLATE_update" "$server" "$realm" "$zone" "delete" "$dns_hostname" "$TTL" "$rtype" "$ip" | nsupdate
     kdestroy
   fi
 done
